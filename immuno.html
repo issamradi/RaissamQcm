@@ -224,6 +224,28 @@
     ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
     ::selection { background: #8ec5fc; color: #000; }
   </style>
+  <style>
+    /* Filtre magique : Inverse les couleurs en gardant les teintes originales (le rouge reste rouge, le vert reste vert) */
+    html.dark-mode {
+      filter: invert(1) hue-rotate(180deg);
+      background: #111; 
+    }
+  </style>
+  <script>
+    // 1️⃣ Au chargement de la page, vérifier si le mode sombre est actif
+    if (localStorage.getItem('theme') === 'dark') {
+      document.documentElement.classList.add('dark-mode');
+    }
+    
+    // 2️⃣ Écouter en temps réel les changements envoyés par le menu (index.html)
+    window.addEventListener('message', (event) => {
+      if (event.data === 'dark') {
+        document.documentElement.classList.add('dark-mode');
+      } else if (event.data === 'light') {
+        document.documentElement.classList.remove('dark-mode');
+      }
+    });
+  </script>
 </head>
 
 <body>
