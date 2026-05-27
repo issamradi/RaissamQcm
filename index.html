@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Portail QCM Médical</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    body { 
+      margin: 0; 
+      font-family: 'Inter', sans-serif; 
+      display: flex; 
+      height: 100vh; 
+      overflow: hidden; 
+      background: #f8fafc; 
+    }
+
+    /* ==== BARRE LATÉRALE ==== */
+    .sidebar { 
+      width: 280px; 
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-right: 1px solid #e2e8f0; 
+      display: flex; 
+      flex-direction: column; 
+      box-shadow: 4px 0 15px rgba(0,0,0,0.05); 
+      z-index: 20; 
+      /* C'est ici que la magie de l'animation opère */
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+    }
+
+    /* Classe activée pour cacher la barre sur le côté */
+    .sidebar.hidden {
+      transform: translateX(-100%);
+      position: absolute;
+      height: 100%;
+    }
+
+    .sidebar-header {
+      padding: 20px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .sidebar h2 { 
+      font-size: 18px; 
+      color: #0f172a; 
+      margin: 0;
+      font-weight: 700;
+    }
+
+    .close-btn {
+      background: transparent;
+      border: none;
+      font-size: 18px;
+      cursor: pointer;
+      color: #94a3b8;
+      transition: color 0.2s;
+    }
+
+    .close-btn:hover {
+      color: #ef4444;
+    }
+
+    .nav-links {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding: 24px;
+    }
+
+    /* Boutons du menu */
+    .menu-link { 
+      display: block; 
+      padding: 14px 18px; 
+      text-decoration: none; 
+      color: #475569; 
+      font-weight: 600; 
+      font-size: 14px;
+      border-radius: 12px; 
+      transition: all 0.2s ease; 
+      border: 1px solid transparent;
+      background: #f1f5f9;
+    }
+
+    .menu-link:hover { 
+      background: #ffffff; 
+      color: #2563eb; 
+      border-color: #93c5fd; 
+      box-shadow: 0 4px 6px rgba(37, 99, 235, 0.1);
+      transform: translateY(-2px);
+    }
+
+    /* ==== ZONE D'AFFICHAGE ==== */
+    .content { 
+      flex: 1; 
+      display: flex; 
+      flex-direction: column; 
+      background: #ffffff;
+      position: relative;
+    }
+
+    /* Barre supérieure pour le bouton Menu */
+    .top-bar {
+      height: 60px;
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+      background: #ffffff;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .open-btn {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      padding: 8px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    }
+
+    .open-btn:hover {
+      background: #f8fafc;
+      border-color: #94a3b8;
+    }
+
+    iframe { 
+      width: 100%; 
+      height: calc(100% - 60px); 
+      border: none; 
+    }
+
+    /* ==== RESPONSIVE MOBILE ==== */
+    @media (max-width: 768px) {
+      .sidebar { 
+        position: absolute; 
+        height: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="sidebar hidden" id="mySidebar">
+    <div class="sidebar-header">
+      <h2>📚 Raissam Qcm</h2>
+      <button class="close-btn" onclick="toggleSidebar()">✖</button>
+    </div>
+    
+    <div class="nav-links">
+      <a href="genetique.html" class="menu-link" target="qcm-frame" onclick="closeOnMobile()">🧬 QCM Génétique</a>
+      <a href="immuno.html" class="menu-link" target="qcm-frame" onclick="closeOnMobile()">🦠 QCM Immuno</a>
+    </div>
+  </div>
+  
+  <div class="content">
+    <div class="top-bar">
+      <button class="open-btn" onclick="toggleSidebar()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        Menu
+      </button>
+    </div>
+    <iframe name="qcm-frame" src="genetique.html" title="Zone de contenu QCM"></iframe>
+  </div>
+
+  <script>
+    function toggleSidebar() {
+      const sidebar = document.getElementById('mySidebar');
+      // Ajoute ou enlève la classe 'hidden' qui fait glisser la barre
+      sidebar.classList.toggle('hidden');
+    }
+
+    function closeOnMobile() {
+      // Ferme automatiquement le menu sur téléphone après avoir cliqué sur un QCM
+      if (window.innerWidth <= 768) {
+        toggleSidebar();
+      }
+    }
+  </script>
+
+</body>
+</html>

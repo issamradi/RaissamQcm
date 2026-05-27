@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Immunopathologie QCM - Mobile</title>
+
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+      background-attachment: fixed;
+      color: #1e293b;
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    button {
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      font-family: 'Inter', sans-serif;
+    }
+
+    button:active {
+      transform: scale(0.97);
+    }
+
+    @media (hover: hover) {
+      button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      }
+    }
+
+    .glass-container {
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      border-radius: 24px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    .stats-grid {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .stat-box {
+      background: #ffffff;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+      border-radius: 16px;
+      padding: 12px 16px;
+      border: 1px solid rgba(0,0,0,0.03);
+      flex: 1;
+      min-width: 120px;
+    }
+
+    .question-card {
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+      transition: border 0.3s ease;
+    }
+
+    .options-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 16px;
+      padding-left: 44px;
+    }
+
+    .action-bar {
+      padding-left: 44px;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .reponse-exacte {
+      font-size: 13px;
+      color: #64748b;
+      font-weight: 500;
+      margin-left: auto;
+      background: #f1f5f9;
+      padding: 6px 12px;
+      border-radius: 12px;
+    }
+
+    /* ==== MENU DÉFILANT AVEC BOUTONS ==== */
+    .tabs-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+    }
+
+    .scroll-btn {
+      background: #ffffff;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 50%;
+      min-width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: #64748b;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+      padding: 0;
+    }
+
+    .scroll-btn:active {
+      transform: scale(0.9);
+    }
+
+    @media (hover: hover) {
+      .scroll-btn:hover {
+        background: #f8fafc;
+        color: #0f172a;
+        border-color: #94a3b8;
+      }
+    }
+
+    .tabs-container {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      padding: 4px 0;
+      flex: 1;
+    }
+
+    .tabs-container::-webkit-scrollbar {
+      display: none;
+    }
+
+    .tabs-container button {
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+
+    /* ==== RESPONSIVE MOBILE ==== */
+    @media screen and (max-width: 768px) {
+      body {
+        padding: 8px;
+      }
+      
+      .glass-container {
+        padding: 1.25rem 1rem;
+        border-radius: 20px;
+      }
+
+      .stats-grid {
+        gap: 8px;
+        margin-bottom: 1.5rem;
+      }
+
+      .stat-box {
+        min-width: 45%;
+        padding: 10px;
+      }
+
+      .question-card {
+        padding: 1rem;
+      }
+
+      .options-wrapper {
+        padding-left: 0;
+      }
+
+      .action-bar {
+        padding-left: 0;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .action-bar button {
+        flex: 1;
+        padding: 10px 0 !important;
+        display: flex;
+        justify-content: center;
+      }
+
+      .status-badge {
+        width: 100%;
+        text-align: center;
+        margin-bottom: 4px;
+      }
+
+      .reponse-exacte {
+        margin-left: 0;
+        width: 100%;
+        text-align: center;
+        margin-top: 4px;
+      }
+    }
+
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+    ::selection { background: #8ec5fc; color: #000; }
+  </style>
+</head>
+
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useRef } = React;
+
+    const TOPICS = [
+      { id: "hla", label: "HLA & MAI", accent: "#2563eb", light: "#dbeafe", border: "#93c5fd", questions: [
+          { q: "Le complexe majeur d'histocompatibilité appelé HLA (human leukocyte antigen) chez l'Homme possède les caractéristiques suivantes :", opts: ["A. Il est localisé sur le bras court du chromosome 6.", "B. Il joue un rôle dans la réponse immunitaire spécifique.", "C. Il a un rôle primordial dans le processus du rejet de greffe.", "D. Il a une structure moléculaire identique quelque soit le type de HLA.", "E. Son immunophenotypage est obligatoire pour le diagnostic positif des maladies systémiques."], ans: ["A", "B", "C"] },
+          { q: "Les maladies auto-immunes non spécifiques d'organe se caractérisent par :", opts: ["A. Leur prédominance féminine.", "B. Une atteinte mono-organique.", "C. Les auto-Ac sont dirigés contre des Ag dispersés dans l'organisme.", "D. Un regroupement possible avec une maladie auto-immune spécifique d'organe.", "E. La positivité du bilan immunologique permet, à elle seule, de faire le diagnostic positif de ces maladies."], ans: ["A", "C", "D"] },
+          { q: "Les maladies auto-immunes spécifiques d'organe ont les caractéristiques suivantes :", opts: ["A. Elles se manifestent par une atteinte articulaire fréquente.", "B. La Réaction Immunitaire est dirigée contre un Ag cible spécifique d'un seul organe.", "C. Elles peuvent s'associer à une MAI non spécifique d'organe chez un même patient.", "D. Leur diagnostic positif porte sur la présence d'AAN.", "E. Une superposition avec une autre MAI spécifique d'organe chez un même patient est possible."], ans: ["B", "C", "E"] },
+          { q: "Les maladies auto-immune sont classées selon :", opts: ["A. Les manifestations cliniques.", "B. Les manifestations biologiques.", "C. Les organes cibles.", "D. Les mécanismes pathogéniques.", "E. Le sexe."], ans: ["A", "C", "D"] },
+          { q: "Les maladies auto-immunes sont un groupe de maladies hétérogènes qui ont la caractéristique commune suivante :", opts: ["A. Elles sont plus fréquentes chez l'homme jeune.", "B. Elles touchent tous les systèmes d'organe.", "C. Elles se compliquent d'insuffisance rénale.", "D. Elles sont liées à la présence d'anticorps anti-nucléaires (AAN).", "E. Elles ont une évolution chronique par poussées entre-coupées de rémissions."], ans: ["B", "E"] },
+          { q: "Le système HLA est un ensemble de gènes codant pour les molécules de surface. Il présente les caractéristiques suivantes :", opts: ["A. Il est localisé sur le bras court du chromosome 6.", "B. Il possède un rôle dans la réponse immunitaire spécifique.", "C. Son typage n'a pas d'intérêt lors des transplantations d'organes.", "D. Son typage est suffisant pour retenir le diagnostic d'une maladie systémique.", "E. La molécule HLA I présente le peptide exogène au lymphocyte CD4."], ans: ["A", "B"] },
+          { q: "L'auto-immunité pathologique est :", opts: ["A. Accompagnée de lésions tissulaires.", "B. En relation avec le HLA DR2.", "C. Monofactorielle.", "D. Dépendante du lymphocyte B.", "E. Dépendante du lymphocyte T."], ans: ["A", "D", "E"] },
+          { q: "Les maladies auto-immunes sont un ensemble de pathologies hétérogènes qui ont les caractéristiques communes suivantes :", opts: ["A. Elles prédominent chez l'homme.", "B. Elle se caractérise par la production d'auto-anticorps.", "C. Elles prédominent chez le sujet jeune.", "D. Elles touchent tous les systèmes d'organes chez un même patient.", "E. Leurs diagnostics reposent sur la seule présence d'auto-anticorps spécifiques."], ans: ["B", "C"] },
+          { q: "Les MAI peuvent être classées selon les mécanismes pathogéniques, on distingue alors :", opts: ["A. Les MAI à immuns complexes.", "B. Les MAI à complément.", "C. Les MAI à lymphocytes B.", "D. Les MAI à lymphocytes T.", "E. Les MAI à auto-Ac."], ans: ["A", "D", "E"] },
+          { q: "Dans les maladies auto-immunes non spécifiques d'organe :", opts: ["A. L'Ag cible est dispersé dans l'organisme.", "B. La superposition avec d'autres maladies auto-immunes spécifiques d'organe n'est pas possible.", "C. Les manifestations cliniques sont multi-systémiques.", "D. La réaction immunitaire est dirigée contre des Ag présents dans les noyaux cellulaires.", "E. Le dépôt de complexe immun spécifique peut être responsable de plusieurs lésions tissulaires."], ans: ["A", "C", "E"] },
+          { q: "Les maladies auto-immunes sont un groupe hétérogène de maladies qui ont les caractéristiques suivantes :", opts: ["A. Elles sont monofactorielles.", "B. Elles sont héréditaires.", "C. Elles prédominent chez la femme.", "D. Leur diagnostic peut être éliminé en l'absence d'auto-anticorps.", "E. Leur diagnostic repose sur des signes cliniques pathognomoniques."], ans: ["C"] },
+          { q: "Quels sont les auto-anticorps retrouvés dans les MAI non spécifiques d'organe ?", opts: ["A. Les Ac anti-R de la TSH.", "B. Les Ac anti-myéline.", "C. Les Ac anti-DNA.", "D. Les Ac anti-histone.", "E. Les AAN."], ans: ["C", "D", "E"] }
+      ]},
+      { id: "behcet", label: "Maladie de Behçet", accent: "#059669", light: "#d1fae5", border: "#34d399", questions: [
+          { q: "Parmi les manifestations cliniques suivantes, quelles sont celles qui font partie des critères diagnostiques de la maladie de Behçet :", opts: ["A. L'aphtose buccale récidivante.", "B. L'aphtose génitale récidivante.", "C. Les lésions d'érythème noueux.", "D. L'HLA B51 positif.", "E. L'atteinte articulaire."], ans: ["A", "B", "C"] },
+          { q: "L'atteinte oculaire au cours de la maladie de Behçet :", opts: ["A. Est fréquente.", "B. Doit être recherchée systématiquement même en l'absence de signes oculaires.", "C. Peut être inaugurale de la maladie.", "D. Ne fait pas partie des critères diagnostiques de la maladie de Behçet.", "E. Peut toucher tous les segments du globe oculaire."], ans: ["A", "B", "C", "E"] },
+          { q: "Parmi les propositions suivantes, quelles sont celles en rapport avec la maladie de Behçet :", opts: ["A. C'est une maladie auto-immune spécifique d'organe.", "B. C'est une vascularite à ANCA.", "C. C'est une vascularite qui peut toucher tout type de vaisseaux.", "D. Peut être à l'origine d'un accident vasculaire cérébral chez le jeune.", "E. Peut se compliquer d'une cécité en absence de traitement précoce."], ans: ["C", "D", "E"] },
+          { q: "L'atteinte oculaire de la maladie de Behçet a les caractéristiques suivantes :", opts: ["A. C'est une complication rare de la maladie.", "B. Elle doit être recherchée systématiquement au cours du suivi de la maladie.", "C. Elle peut intéresser tous les segments de l'œil.", "D. Elle peut être inaugurale de la maladie.", "E. Elle ne se complique pas de cécité."], ans: ["B", "C", "D"] },
+          { q: "Le traitement de la maladie de Behçet avec atteinte oculaire sévère repose sur :", opts: ["A. La colchicine seule.", "B. Les anticoagulants.", "C. La corticothérapie par voie générale et les immunosuppresseurs.", "D. Une antibiothérapie à large spectre.", "E. Les anti-inflammatoires non stéroïdiens."], ans: ["C"] },
+          { q: "Cochez les réponses justes concernant l'immunophénotypage HLA au cours de la maladie de Behçet :", opts: ["A. Il permet de confirmer l'association de l'HLA B27 à la maladie de Behçet.", "B. Il fait partie des critères diagnostiques de la maladie de Behçet.", "C. Il permet de retenir le diagnostic en l'absence d'aphte buccale.", "D. Il est utile pour chercher la prédisposition génétique à la maladie.", "E. Il n'a d'intérêt que chez l'enfant."], ans: ["D"] },
+          { q: "(Cas clinique) Patient âgé de 24 ans, consulte pour thrombose veineuse du membre inférieur droit. Antécédents d'aphtose buccale récidivante, d'oligoarthrite des membres inférieurs et de baisse de l'acuité visuelle. Bilan : HLA B51 positif. Relevez les critères permettant de retenir la maladie de Behçet (nouveaux critères internationaux) :", opts: ["A. L'aphtose buccale récidivante.", "B. La thrombose veineuse du membre inférieur.", "C. Le HLA B51 positif.", "D. L'oligo-arthrite.", "E. L'âge jeune."], ans: ["A", "B"] },
+          { q: "Quels sont les examens complémentaires à réaliser chez ce patient ?", opts: ["A. Un bilan immunologique.", "B. Une sérologie syphilitique.", "C. Un examen ophtalmologique.", "D. Une incidence des sacro-iliaques.", "E. Une radiographie du thorax."], ans: ["C"] },
+          { q: "Quelles sont les complications à craindre chez ce patient ?", opts: ["A. Une maladie post-phlébitique.", "B. Une cécité.", "C. Une fibrose pulmonaire.", "D. Des déformations articulaires.", "E. Une embolie pulmonaire."], ans: ["B", "E"] },
+          { q: "Les signes cutanéo-muqueux de la maladie de Behçet sont :", opts: ["A. L'alopécie.", "B. L'érythème noueux.", "C. L'aphtose buccale.", "D. L'érythème malaire.", "E. La pseudofolliculite."], ans: ["B", "C", "E"] },
+          { q: "Les complications de la maladie de Behçet sont :", opts: ["A. Le lymphome.", "B. Les destructions articulaires.", "C. Les anévrysmes pulmonaires.", "D. L'hypertension artérielle.", "E. L'embolie pulmonaire."], ans: ["C", "E"] },
+          { q: "La maladie de Behçet est une maladie qui :", opts: ["A. Touche le sujet jeune.", "B. Atteint les muqueuses.", "C. Altère l'acuité visuelle.", "D. Entraîne une sécheresse buccale.", "E. Atteint le rachis cervical."], ans: ["A", "B", "C"] },
+          { q: "(Cas clinique) Patient âgé de 25 ans consulte pour des gonalgies inflammatoires avec notion de rougeur oculaire bilatérale depuis 3 mois. L'interrogatoire révèle une aphtose buccale récidivante. Le diagnostic le plus probable est :", opts: ["A. Un rhumatisme psoriasique.", "B. Une spondyloarthrite ankylosante.", "C. Une arthrite réactionnelle.", "D. Une maladie de Behçet.", "E. Une infection herpétique."], ans: ["D"] },
+          { q: "L'examen clinique de ce patient permettra de retrouver :", opts: ["A. Une oligo-arthrite des membres inférieurs.", "B. Une raideur cervicale.", "C. Des vésicules péri-buccales.", "D. Un érythème noueux.", "E. Une urétrite."], ans: ["A", "D"] },
+          { q: "La maladie de Behçet est :", opts: ["A. Fréquente en Europe.", "B. Une maladie auto-immune.", "C. Une vascularite systémique.", "D. Prédominante chez la femme.", "E. À tropisme veineux."], ans: ["B", "C", "E"] },
+          { q: "Les organes touchés par la maladie de Behçet sont :", opts: ["A. Le foie.", "B. La peau.", "C. La rate.", "D. Le cerveau.", "E. L'œil."], ans: ["B", "D", "E"] },
+          { q: "La maladie de Behçet se complique de :", opts: ["A. Fibrose pulmonaire.", "B. Embolie pulmonaire.", "C. Cécité.", "D. Hépatite chronique.", "E. Kératite."], ans: ["B", "C"] },
+          { q: "(Cas clinique) Patient de 25 ans se présente dans un tableau de baisse de l'acuité visuelle avec rougeur oculaire et notion d'aphtose bipolaire. Vous évoquez :", opts: ["A. Une périarthrite noueuse.", "B. Une maladie de Behçet.", "C. Une syphilis primaire.", "D. Un syndrome de Gougerot-Sjögren.", "E. Une spondyloarthrite ankylosante."], ans: ["B"] },
+          { q: "Chez ce patient, l'atteinte oculaire est en rapport avec :", opts: ["A. Un corps étranger intra-oculaire.", "B. Une infection virale.", "C. Une uvéite antérieure.", "D. Une conjonctivite.", "E. Un glaucome."], ans: ["C"] },
+          { q: "La maladie de Behçet peut se compliquer de :", opts: ["A. Une fibrose pulmonaire.", "B. Une cécité.", "C. Un anévrisme.", "D. Une insuffisance rénale.", "E. Un lymphome."], ans: ["B", "C"] },
+          { q: "Les signes cliniques en rapport avec une maladie de Behçet sont :", opts: ["A. Aphtose buccale.", "B. Uvéite.", "C. Xérostomie.", "D. Phénomène de Raynaud.", "E. Érythème malaire."], ans: ["A", "B"] },
+          { q: "Les organes les plus atteints au cours de la maladie de Behçet :", opts: ["A. Le rein.", "B. Le poumon.", "C. L'œil.", "D. Le cœur.", "E. Le réseau vasculaire veineux."], ans: ["C", "D", "E"] },
+          { q: "L'aphtose buccale au cours de la maladie de Behçet possède les caractéristiques suivantes :", opts: ["A. Elle est récidivante.", "B. Elle est indolore.", "C. Elle guérit sans laisser de cicatrice.", "D. Elle a un fond rouge.", "E. Elle est unique."], ans: ["A", "C"] },
+          { q: "L'atteinte vasculaire au cours de la maladie de Behçet se présente sous forme :", opts: ["A. D'anévrisme.", "B. De mégacapillaires.", "C. D'angiomes.", "D. De thrombose veineuse.", "E. De phénomène de Raynaud."], ans: ["A", "D"] }
+      ]},
+      { id: "deficit", label: "Déficit Immunitaire", accent: "#ea580c", light: "#ffedd5", border: "#fdba74", questions: [
+          { q: "Le déficit immunitaire secondaire au cours du diabète a les caractéristiques suivantes :", opts: ["A. C'est une cause fréquente d'infections graves.", "B. Il peut être dû à une altération de l'immunité humorale et cellulaire.", "C. Sa prise en charge repose sur l'équilibre glycémique.", "D. C'est le plus fréquent des déficits immunitaires secondaires.", "E. Il peut être à l'origine de lésions granulomateuses."], ans: ["A", "B", "C"] },
+          { q: "Parmi les déficits immunitaires primitifs touchant les cellules phagocytaires on retrouve :", opts: ["A. Les neutropénies congénitales.", "B. Le déficit en molécules d'adhésion.", "C. Le défaut d'expression de l'HLA-Classe II.", "D. La granulomatose septique chronique.", "E. Le déficit immunitaire combiné sévère (SCID)."], ans: ["A", "B", "D"] },
+          { q: "Concernant les déficits immunitaires combinés sévères (DICS) :", opts: ["A. Les signes apparaissent à partir de l'âge de 6 mois.", "B. La mort est inévitable en l'absence de greffe de moelle.", "C. Le mécanisme le plus fréquent touche le réarrangement des gènes du TCR et BCR.", "D. Le patient présente une lymphopénie T profonde.", "E. Le taux des immunoglobulines est généralement normal."], ans: ["A", "B", "D"] },
+          { q: "Concernant les déficits immunitaires combinés sévères (DICS) — 2ème question :", opts: ["A. Les signes apparaissent à partir de l'âge de 6 mois.", "B. La mort est inévitable en l'absence de greffe de moelle.", "C. Le mécanisme le plus fréquent touche le réarrangement des gènes du TCR et BCR.", "D. Le patient présente une lymphopénie T profonde.", "E. Le taux des immunoglobulines est généralement normal."], ans: ["A", "B", "D"] },
+          { q: "(Cas clinique) Monsieur F. âgé de 75 ans, diabétique (type 2) sous antidiabétiques oraux avec des antécédents d'infections sévères à répétition, consulte pour une infection pulmonaire à pneumocystis. Quels facteurs le prédisposent au déficit immunitaire secondaire ?", opts: ["A. Son âge.", "B. Le diabète.", "C. L'utilisation d'antibiotiques à large spectre.", "D. La prise d'anti-inflammatoires non stéroïdiens au long cours.", "E. Les anti-diabétiques oraux."], ans: ["A", "B"] },
+          { q: "La prise en charge de Mr F. reposera sur :", opts: ["A. Une antibiothérapie adaptée au germe.", "B. Un régime alimentaire riche en micro-nutriments.", "C. Une antibio-prophylaxie.", "D. Un équilibre glycémique.", "E. Une corticothérapie au long cours."], ans: ["A", "C", "D"] },
+          { q: "Concernant les déficits immunitaires touchant les cellules phagocytaires :", opts: ["A. Sont les plus fréquents des déficits immunitaires primitifs.", "B. Les anomalies cellulaires peuvent être de types quantitatifs ou qualitatifs.", "C. Touchent essentiellement les polynucléaires neutrophiles.", "D. La maladie de Bruton en fait partie.", "E. La granulomatose septique chronique en fait partie."], ans: ["B", "C", "E"] },
+          { q: "Concernant les déficits immunitaires combinés sévères (DICS) :", opts: ["A. Les signes cliniques apparaissent à partir de l'âge de 6 mois.", "B. Le mécanisme le plus fréquent touche le réarrangement des gènes du TCR et du BCR.", "C. Le patient présente une lymphopénie T profonde.", "D. Le taux des immunoglobulines est normal.", "E. La mort est inévitable en l'absence de greffe de moelle osseuse."], ans: ["A", "C", "E"] },
+          { q: "Le déficit immunitaire associé aux hémopathies est :", opts: ["A. Un déficit immunitaire secondaire rare.", "B. Lié à la maladie ou à la chimiothérapie.", "C. Souvent associé à la prise des antibiotiques au long cours.", "D. À l'origine de complications infectieuses graves.", "E. N'est symptomatique que s'il est en rapport avec une neutropénie sévère."], ans: ["B", "D"] },
+          { q: "Le déficit immunitaire secondaire d'origine humoral se caractérise par :", opts: ["A. La survenue répétée d'infections cutanées et de granulome.", "B. Expose au risque accru d'infections par des germes à parasitisme extracellulaire obligatoire.", "C. Peut-être une complication de la prise des corticoïdes au long cours.", "D. Son association possible avec le déficit immunitaire cellulaire.", "E. Est plus rare que le déficit immunitaire primitif humoral."], ans: ["B", "C", "D"] },
+          { q: "Parmi les médicaments suivants, quels sont ceux qui peuvent causer un déficit immunitaire secondaire ?", opts: ["A. La corticothérapie au long cours.", "B. Les immunosuppresseurs.", "C. La ciclosporine.", "D. Les anti-inflammatoires non stéroïdiens.", "E. Les inhibiteurs de la pompe à proton."], ans: ["A", "B", "C"] },
+          { q: "Les déficits immunitaires secondaires se distinguent des déficits immunitaires primaires (DIP) par :", opts: ["A. Ils sont plus fréquents et plus profonds que les DIP.", "B. Ils sont dus à l'altération de l'immunité adaptative dans tous les cas.", "C. L'étiologie la plus fréquente est la malnutrition.", "D. L'absence de manifestations infectieuses.", "E. Leur prise en charge repose sur le traitement symptomatique et étiologique."], ans: ["A", "C", "E"] },
+          { q: "Le déficit immunitaire :", opts: ["A. Peut être secondaire à un dysfonctionnement des cellules immunitaires.", "B. Peut être acquis.", "C. Toujours primitif.", "D. Touche l'enfant.", "E. Peut survenir à l'âge adulte."], ans: ["A", "B", "E"] }
+      ]}
+    ];
+
+    const LETTER = ["A","B","C","D","E"];
+
+    function App() {
+      const [activeTab, setActiveTab] = useState("hla");
+      const [selections, setSelections] = useState({});
+      const [checked, setChecked] = useState({});
+      const scrollRef = useRef(null);
+
+      const scroll = (offset) => {
+        if (scrollRef.current) {
+          scrollRef.current.scrollBy({ left: offset, behavior: "smooth" });
+        }
+      };
+
+      const topic = TOPICS.find(t => t.id === activeTab);
+      const { accent, light, border } = topic;
+
+      function qKey(topicId, qi) { return `${topicId}-${qi}`; }
+
+      function toggle(topicId, qi, letter) {
+        const key = qKey(topicId, qi);
+        setSelections(prev => {
+          const cur = prev[key] || [];
+          return { ...prev, [key]: cur.includes(letter) ? cur.filter(l => l !== letter) : [...cur, letter] };
+        });
+      }
+
+      function verify(topicId, qi) {
+        setChecked(prev => ({ ...prev, [qKey(topicId, qi)]: true }));
+      }
+
+      function reset(topicId, qi) {
+        const key = qKey(topicId, qi);
+        setSelections(prev => { const n = { ...prev }; delete n[key]; return n; });
+        setChecked(prev => { const n = { ...prev }; delete n[key]; return n; });
+      }
+
+      function getStatus(topicId, qi) {
+        const key = qKey(topicId, qi);
+        if (!checked[key]) return null;
+        const sel = selections[key] || [];
+        const ans = topic.questions[qi].ans;
+        return sel.length === ans.length && ans.every(a => sel.includes(a)) ? "correct" : "wrong";
+      }
+
+      const total = topic.questions.length;
+      const done = topic.questions.filter((_, i) => checked[qKey(activeTab, i)]).length;
+      const correct = topic.questions.filter((_, i) => getStatus(activeTab, i) === "correct").length;
+
+      return (
+        <div className="glass-container">
+          
+          <div style={{ paddingBottom: "1.5rem", borderBottom: `2px solid ${light}`, marginBottom: "1.5rem" }}>
+            <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: "0.08em", color: "#64748b", textTransform: "uppercase", marginBottom: 12 }}>
+              🧬 Immunopathologie — QCM Interactif
+            </div>
+
+            <div className="tabs-wrapper">
+              <button className="scroll-btn" onClick={() => scroll(-200)}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+              </button>
+
+              <div className="tabs-container" ref={scrollRef}>
+                {TOPICS.map(t => (
+                  <button key={t.id} onClick={() => setActiveTab(t.id)}
+                    style={{ 
+                      padding: "8px 18px", 
+                      borderRadius: "24px", 
+                      fontSize: "14px", 
+                      fontWeight: 600, 
+                      cursor: "pointer", 
+                      border: `1.5px solid ${activeTab === t.id ? 'transparent' : t.border}`,
+                      background: activeTab === t.id ? t.accent : "#ffffff",
+                      color: activeTab === t.id ? "#fff" : t.accent, 
+                    }}>
+                    {t.label}
+                  </button>
+                ))}
+              </div>
+
+              <button className="scroll-btn" onClick={() => scroll(200)}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <div className="stats-grid">
+            {[["Questions 📝", total], ["Vérifiées 🔍", done], ["Correctes ✅", correct]].map(([label, val]) => (
+              <div key={label} className="stat-box">
+                <div style={{ fontSize: 12, color: "#64748b", fontWeight: 600, marginBottom: 4 }}>{label}</div>
+                <div style={{ fontSize: 24, fontWeight: 700, color: label.includes("Correctes") && done > 0 ? accent : "#1e293b" }}>{val}</div>
+              </div>
+            ))}
+            <div className="stat-box" style={{ borderLeft: `4px solid ${accent}` }}>
+              <div style={{ fontSize: 12, color: "#64748b", fontWeight: 600, marginBottom: 4 }}>Score 🎯</div>
+              <div style={{ fontSize: 24, fontWeight: 700, color: accent }}>{done > 0 ? Math.round(correct / done * 100) : 0}%</div>
+            </div>
+          </div>
+
+          {topic.questions.map((q, qi) => {
+            const key = qKey(activeTab, qi);
+            const sel = selections[key] || [];
+            const isChecked = !!checked[key];
+            const status = getStatus(activeTab, qi);
+
+            return (
+              <div key={qi} className="question-card" 
+                style={{ 
+                  borderLeft: `4px solid ${isChecked ? (status === "correct" ? "#10b981" : "#ef4444") : "transparent"}`
+                }}>
+                <div style={{ display: "flex", gap: 12, marginBottom: 16, alignItems: "flex-start" }}>
+                  <span style={{ minWidth: 32, height: 32, borderRadius: "50%", background: light, display: "flex", alignItems: "center", justifyContent: "center",
+                    fontSize: 14, fontWeight: 700, color: accent, flexShrink: 0 }}>{qi + 1}</span>
+                  <p style={{ margin: 0, fontSize: 15, fontWeight: 600, color: "#1e293b", lineHeight: 1.6, paddingTop: 4 }}>{q.q}</p>
+                </div>
+
+                <div className="options-wrapper">
+                  {q.opts.map((opt, oi) => {
+                    const letter = LETTER[oi];
+                    const selected = sel.includes(letter);
+                    const isCorrectOpt = q.ans.includes(letter);
+
+                    let bg = "#f8fafc", borderCol = "#e2e8f0", textCol = "#475569";
+                    if (isChecked) {
+                      if (isCorrectOpt) { bg = "#ecfdf5"; borderCol = "#10b981"; textCol = "#065f46"; }
+                      else if (selected && !isCorrectOpt) { bg = "#fef2f2"; borderCol = "#ef4444"; textCol = "#991b1b"; }
+                    } else if (selected) {
+                      bg = light; borderCol = accent; textCol = accent;
+                    }
+
+                    return (
+                      <div key={oi} onClick={() => !isChecked && toggle(activeTab, qi, letter)}
+                        style={{ display: "flex", alignItems: "flex-start", gap: 10, padding: "10px 14px", borderRadius: 12,
+                          border: `1.5px solid ${borderCol}`, background: bg, cursor: isChecked ? "default" : "pointer",
+                          transition: "all 0.2s", userSelect: "none" }}>
+                        <div style={{ width: 18, height: 18, borderRadius: 6, border: `2px solid ${borderCol}`, flexShrink: 0, marginTop: 2,
+                          background: selected ? accent : "transparent", display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.2s" }}>
+                          {selected && <svg width="12" height="12" viewBox="0 0 10 10"><polyline points="1.5,5 4,7.5 8.5,2" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round"/></svg>}
+                          {isChecked && isCorrectOpt && !selected && <svg width="12" height="12" viewBox="0 0 10 10"><polyline points="1.5,5 4,7.5 8.5,2" fill="none" stroke="#10b981" strokeWidth="2" strokeLinecap="round"/></svg>}
+                        </div>
+                        <span style={{ fontSize: 14, color: textCol, lineHeight: 1.5, fontWeight: 500 }}>{opt}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                <div className="action-bar">
+                  {!isChecked ? (
+                    <button onClick={() => verify(activeTab, qi)}
+                      style={{ padding: "8px 20px", borderRadius: 20, fontSize: 13, fontWeight: 600, cursor: sel.length === 0 ? "not-allowed" : "pointer",
+                        border: "none", background: sel.length === 0 ? "#e2e8f0" : accent,
+                        color: sel.length === 0 ? "#94a3b8" : "#fff", transition: "all 0.2s", boxShadow: sel.length === 0 ? "none" : `0 4px 12px ${light}` }}>
+                      Vérifier
+                    </button>
+                  ) : (
+                    <>
+                      <span className="status-badge" style={{ fontSize: 13, fontWeight: 700, color: status === "correct" ? "#047857" : "#b91c1c",
+                        background: status === "correct" ? "#d1fae5" : "#fee2e2", padding: "8px 14px", borderRadius: 16 }}>
+                        {status === "correct" ? "✨ Bonne réponse !" : "💡 Oups, à revoir"}
+                      </span>
+                      <button onClick={() => reset(activeTab, qi)}
+                        style={{ padding: "8px 14px", borderRadius: 16, fontSize: 13, fontWeight: 600, cursor: "pointer",
+                          border: "1.5px solid #cbd5e1", background: "#f8fafc", color: "#64748b" }}>
+                        Réessayer 🔄
+                      </button>
+                    </>
+                  )}
+                  {isChecked && status !== "correct" && (
+                    <span className="reponse-exacte">
+                      Réponse(s) exacte(s) : <strong style={{ color: "#0f172a" }}>{q.ans.join(", ")}</strong>
+                    </span>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+  </script>
+</body>
+</html>
